@@ -8,8 +8,8 @@ example of an olympic country:
 }
 */
 
-class Olympic {
-    id!: Number
-    country!: String
-    participations!: Array<Object>
+export interface Olympic {
+    id: number;
+    country: string;
+    participations: Array<Object>;
 }

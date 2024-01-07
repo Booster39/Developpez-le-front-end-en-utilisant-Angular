@@ -10,10 +10,10 @@ example of participation:
 }
 */
 
-class Participation {
-    id!: Number
-    year!: Number
-    city!: String
-    medalsCount!: Number
-    athleteCount!: Number
+export interface Participation {
+    id: number
+    year: number
+    city: string
+    medalsCount: number
+    athleteCount: number
 }
