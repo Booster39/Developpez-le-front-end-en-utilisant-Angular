@@ -7,3 +7,9 @@ example of an olympic country:
     participations: []
 }
 */
+
+class Olympic {
+    id!: Number
+    country!: String
+    participations!: Array<Object>
+}

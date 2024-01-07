@@ -9,3 +9,11 @@ example of participation:
     athleteCount: 372
 }
 */
+
+class Participation {
+    id!: Number
+    year!: Number
+    city!: String
+    medalsCount!: Number
+    athleteCount!: Number
+}
