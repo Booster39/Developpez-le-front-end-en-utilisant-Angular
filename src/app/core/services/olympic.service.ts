@@ -2,6 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+import { Olympic } from '../models/Olympic';
+import { Participation } from '../models/Participation';
 
 @Injectable({
   providedIn: 'root',
@@ -9,6 +11,9 @@ import { catchError, tap } from 'rxjs/operators';
 export class OlympicService {
   private olympicUrl = './assets/mock/olympic.json';
   private olympics$ = new BehaviorSubject<any>(undefined);
+
+  olympic: Olympic | undefined;
+  participation: Participation | undefined;
 
   constructor(private http: HttpClient) {}
 
@@ -23,6 +28,13 @@ export class OlympicService {
         return caught;
       })
     );
+  }
+  showOlympic() {
+    this.getOlympics().subscribe(
+      resp => {
+        this.olympic = resp
+      }
+    )
   }
 
   getOlympics() {
