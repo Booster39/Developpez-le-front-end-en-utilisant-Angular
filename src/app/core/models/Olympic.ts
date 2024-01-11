@@ -11,5 +11,5 @@ example of an olympic country:
 export interface Olympic {
     id: number;
     country: string;
-    participations: Array<Array<Object>>;
+    participations: Array<Object>;
 }
