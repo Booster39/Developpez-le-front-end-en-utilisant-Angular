@@ -3,7 +3,7 @@ import { Observable, of } from 'rxjs';
 import { Olympic } from 'src/app/core/models/Olympic';
 import { Participation } from 'src/app/core/models/Participation';
 import { OlympicService } from 'src/app/core/services/olympic.service';
-import { countries } from 'src/app/database.test';
+import { countries, olympic, participation } from 'src/app/database.test';
 
 
 @Component({
@@ -21,21 +21,32 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.olympicService.loadInitialData().subscribe(
       resp => {
-        this.olympic = resp
-        this.olympic.id = resp.map((data :any) => data.id)
-        this.olympic.country = resp.map((data :any) => data.country)
-        this.olympic.participations = resp.map((data :any) => data.participations)
+        this.olympic = {
+          id: resp.map((data:any) => data.id),
+          country: resp.map((data:any) => data.country),
+          participations: resp.map((data:any) => data.participations),
+        };
+  
+        this.participation = {
+          id:  resp.map((obj:any) => obj.participations.map((data:any) => data.id)),
+          year: resp.map((obj:any) => obj.participations.map((data:any) => data.year)),
+          city: resp.map((obj:any) => obj.participations.map((data:any) => data.city)),
+          medalsCount: resp.map((obj:any) => obj.participations.map((data:any) => data.medalsCount)),
+          athleteCount: resp.map((obj:any) => obj.participations.map((data:any) => data.athleteCount)),
+        }
         //console.log(this.olympic)
-
-        //id: 1, year: 2012, city: 'Londres', medalsCount: 28, athleteCount: 37
-        this.participation = resp.map((obj :any) => obj.participations.map((data :any) => data))
-        this.participation.id = resp.map((obj :any) => obj.participations.map((data :any) => data.id))
-        this.participation.year = resp.map((obj :any) => obj.participations.map((data :any) => data.year))
-        this.participation.city = resp.map((obj :any) => obj.participations.map((data :any) => data.city))
-        this.participation.medalsCount = resp.map((obj :any) => obj.participations.map((data :any) => data.medalsCount))
-        this.participation.athleteCount = resp.map((obj :any) => obj.participations.map((data :any) => data.athleteCount))
-        //console.log(this.participation.city)
+        //console.log(this.participation)
       }
     );
+  }
+
+  getTotalMedalsCount(medalsMatrix:Array<Array<number>>, id:number) {
+    let total = 0;
+
+    for (let j = 0; j < medalsMatrix[(id - 1)].length; j++) {
+        total += medalsMatrix[(id - 1)][j];
+    }
+
+    return total;
   }
 }
