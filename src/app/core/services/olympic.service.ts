@@ -86,4 +86,8 @@ countMedals(olympic: Olympic): number {
     return newData;
   }
 
+  navigateToDetailPage() {
+    this.router.navigate(['/detail'])
+  }
+
 }
