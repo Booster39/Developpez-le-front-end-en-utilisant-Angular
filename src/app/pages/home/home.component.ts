@@ -5,7 +5,6 @@ import { Observable, Subscription, of } from 'rxjs';
 import { Olympic } from 'src/app/core/models/Olympic';
 import { Participation } from 'src/app/core/models/Participation';
 import { OlympicService } from 'src/app/core/services/olympic.service';
-import { countries, olympic, participation } from 'src/app/database.test';
 
 
 @Component({
@@ -21,10 +20,10 @@ export class HomeComponent implements OnInit {
   pieChart!: any;
   mLabels: Array<string> = [];
   mMedals: Array<number> = [];
+  mYears: Array<any> = [];
   mNumberOfGames: number = 0;
   subscription!: Subscription;
   data!: Subscription;
-  //myChart = this.olympicService.fromArrayToObject(this.olympicService.createFormattedHomeData(data));
 
   constructor(private olympicService: OlympicService, private router: Router) {}
 
@@ -41,8 +40,14 @@ export class HomeComponent implements OnInit {
     for (let olympic of olympics) {
       this.mLabels.push(olympic.country);
       this.mMedals.push(this.olympicService.countMedals(olympic));
+      if (olympic.participations) {
+        for (let participation of olympic.participations) {
+          this.mYears.push(participation.year);
+        }
+      }
     }
-
+    this.mYears = [...new Set(this.mYears)]
+    this.mNumberOfGames = this.mYears.length
     this.createChart();
   }
 }

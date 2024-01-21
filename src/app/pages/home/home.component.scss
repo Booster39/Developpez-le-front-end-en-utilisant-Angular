@@ -1,0 +1,38 @@
+.center-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 10vh;
+}
+
+.green-button {
+    background-color: #1c8994;
+    color: #fff;
+    padding: 8px 8px;
+    font-size: 30px;
+    border: none;
+    cursor: pointer;
+    border-radius: 10px;
+}
+
+.side-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.side-container button {
+    background-color: white;
+    border: 3px solid #1c8994;
+    color: #6b6b6b;
+    padding: 8px 8px;
+    font-size: 20px;
+    cursor: pointer;
+    border-radius: 10px;
+    margin: 10px;
+}
+
+.counts {
+    font-weight: bold;
+    color:black;
+}
