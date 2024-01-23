@@ -17,10 +17,13 @@ export class DetailComponent implements OnInit {
   public participation!: Participation
   olympics$!: Observable<Array<Olympic>>;
   lineChart!: any;
-  mLabels: Array<string> = [];
-  mMedals: Array<number> = [];
+  entriesCountry: number = 0;
+  medalsCountry: Array<number> = [];
+  medalsCountryCount: number = 0;
+  athletesCountry: Array<any> = [];
+  athletesCountryCount: number = 0;
   mYears: Array<any> = [];
-  mNumberOfGames: number = 0;
+  gamesCountry: number = 0;
   subscription!: Subscription;
   data!: Subscription;
 
@@ -34,22 +37,27 @@ export class DetailComponent implements OnInit {
    *
    * @param olympics - The array of olympics retrieved by service
    */
- modifyChartData(olympics: Array<Olympic>): void {
+ modifylineChartData(olympics: Array<Olympic>, selectedCountry:string): void {
   if (olympics) {
     for (let olympic of olympics) {
-      this.mLabels.push(olympic.country);
-      this.mMedals.push(this.olympicService.countMedals(olympic));
-      if (olympic.participations) {
-        for (let participation of olympic.participations) {
-          this.mYears.push(participation.year);
+      if (olympic.country === selectedCountry) {
+        this.entriesCountry = olympic.participations.length;
+        if (olympic.participations) {
+          for (let participation of olympic.participations) {
+            this.medalsCountry.push(participation.medalsCount);
+            this.athletesCountry.push(participation.athleteCount);
+            this.mYears.push(participation.year);
+          }
         }
       }
-    }
-    this.mYears = [...new Set(this.mYears)]
-    this.mNumberOfGames = this.mYears.length
-    this.createChart();
+
+    this.createLineChart();
   }
+  this.gamesCountry = this.mYears.length
+  this.medalsCountryCount = this.medalsCountry.reduce((acc, value)=>acc + value,0)
+  this.athletesCountryCount = this.athletesCountry.reduce((acc, value)=>acc + value,0)
 }
+ }
 
     /**
    * Sets initial data
@@ -61,15 +69,23 @@ export class DetailComponent implements OnInit {
     setInitialData() {
       this.olympics$ = this.olympicService.getOlympics();
       this.subscription = this.olympics$.subscribe((value) => {
-        this.modifyChartData(value);
+        this.modifylineChartData(value, 'France');
       });
     }
- 
-    createChart(): void {
-      this.lineChart = new Chart('myChart', {
+    destroyChart() {
+      const existingChart = Chart.getChart("lineChart");
+      
+        if (existingChart) {
+          existingChart.destroy();
+        }
+      }
+
+    createLineChart(): void {
+      this.destroyChart()
+      this.lineChart = new Chart('lineChart', {
         type: 'line',
         data: {
-          labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+          labels: this.mYears,
           datasets: [{
             label: '# of Votes',
             data: [12, 19, 3, 5, 2, 3],

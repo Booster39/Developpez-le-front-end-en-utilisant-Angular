@@ -50,13 +50,19 @@ export class HomeComponent implements OnInit {
     }
     this.mYears = [...new Set(this.mYears)]
     this.mNumberOfGames = this.mYears.length
-    this.createChart();
+    this.createPieChart();
   }
 }
+destroyChart() {
+const existingChart = Chart.getChart("pieChart");
 
-
-createChart(): void {
-  this.pieChart = new Chart('MyChart', {
+  if (existingChart) {
+    existingChart.destroy();
+  }
+}
+createPieChart(): void {
+  this.destroyChart()
+  this.pieChart = new Chart('pieChart', {
     type: 'pie',
     data: {
       labels: this.mLabels,
@@ -91,6 +97,7 @@ createChart(): void {
       this.olympics$ = this.olympicService.getOlympics();
       this.subscription = this.olympics$.subscribe((value) => {
         this.modifyChartData(value);
+        this.pieChart.destroy();
       });
     }
  
