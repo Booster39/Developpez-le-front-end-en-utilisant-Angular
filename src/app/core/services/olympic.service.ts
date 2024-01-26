@@ -1,10 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
 import { Olympic } from '../models/Olympic';
 import { Participation } from '../models/Participation';
 import { Router } from '@angular/router';
+import { Chart } from 'chart.js';
 
 @Injectable({
   providedIn: 'root',
@@ -29,13 +30,6 @@ export class OlympicService {
       })
     );
   }
-  showOlympic() {
-    this.getOlympics().subscribe(
-      resp => {
-        this.olympic = resp
-      }
-    )
-  }
 /**
  * Returns the total number of medals for a chosen country
  *
@@ -52,39 +46,21 @@ countMedals(olympic: Olympic): number {
   return medals
   }
   
+  getDataForCountry(countryName: string): Observable<Olympic | undefined> {
+    return this.olympics$.asObservable().pipe(
+      map(olympics => {
+        if (Array.isArray(olympics)) {
+          return olympics.find((country: Olympic) => country.country === countryName);
+        }
+        return undefined;
+      })
+    );
+}
 
+getOlympics():Observable<Array<Olympic>> {
+  return this.olympics$.asObservable();
+}
 
-  getOlympics() {
-    return this.olympics$.asObservable();
-  }
-  fromArrayToObject(data:Array<any>){
-    const transformedData = data.reduce((acc, countryData) => {
-      const { country, participations, ...rest } = countryData;
-      const countryWithoutParticipations = { ...rest };
-      acc[country] = countryWithoutParticipations;
-      return acc;
-    }, {});
-    
-    console.log(transformedData);
-    return transformedData;
-  }
-  createFormattedHomeData(data:Array<any>) { 
-    const newData = data.map((countryData:any) => {
-      const { id, country, participations } = countryData;
-      console.log(participations)
-      const totalMedals = participations.reduce((acc:number, participation:Array<any>) => {
-        return acc + participation.reduce((medalsContainer, yearData) => medalsContainer + yearData.medalsCount, 0);
-      }, 0);
-      return {
-        id,
-        country,
-        medals: totalMedals
-      };
-    });
-
-    console.log(newData);
-    return newData;
-  }
 
   navigateToDetailPage() {
     this.router.navigate(['/detail'])

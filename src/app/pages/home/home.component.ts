@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Chart } from 'chart.js/auto';
 import { Observable, Subscription, of } from 'rxjs';
 import { Olympic } from 'src/app/core/models/Olympic';
-import { Participation } from 'src/app/core/models/Participation';
 import { OlympicService } from 'src/app/core/services/olympic.service';
+import { ChartEvent } from 'chart.js/dist/core/core.plugins';
+import { ActiveElement } from 'chart.js/dist/plugins/plugin.tooltip';
 
 
 @Component({
@@ -14,30 +15,35 @@ import { OlympicService } from 'src/app/core/services/olympic.service';
   '../pages.scss'
 ],
 })
-export class HomeComponent implements OnInit {
 
-  public olympic!: Olympic
-  public participation!: Participation
+export class HomeComponent implements OnInit, OnDestroy { 
+  public olympics!: Olympic[]
   olympics$!: Observable<Array<Olympic>>;
   pieChart!: any;
   mLabels: Array<string> = [];
   mMedals: Array<number> = [];
-  mYears: Array<any> = [];
+  mYears: Array<number> = [];
   mNumberOfGames: number = 0;
   subscription!: Subscription;
   data!: Subscription;
+  clickedLabel!: string;
 
   constructor(private olympicService: OlympicService, private router: Router) {}
 
   ngOnInit(): void {
     this.data = this.olympicService.loadInitialData().subscribe(() => this.setInitialData());
   }
+
+  ngOnDestroy(): void {
+    this.data.unsubscribe()
+    this.subscription.unsubscribe()
+  }
  /**
    * Populates the empty pie chart with correct data
    *
    * @param olympics - The array of olympics retrieved by service
    */
- modifyChartData(olympics: Array<Olympic>): void {
+ modifyPieChartData(olympics: Array<Olympic>): void {
   if (olympics) {
     for (let olympic of olympics) {
       this.mLabels.push(olympic.country);
@@ -48,20 +54,13 @@ export class HomeComponent implements OnInit {
         }
       }
     }
-    this.mYears = [...new Set(this.mYears)]
-    this.mNumberOfGames = this.mYears.length
+    this.mNumberOfGames = [...new Set(this.mYears)].length
     this.createPieChart();
   }
 }
-destroyChart() {
-const existingChart = Chart.getChart("pieChart");
 
-  if (existingChart) {
-    existingChart.destroy();
-  }
-}
+
 createPieChart(): void {
-  this.destroyChart()
   this.pieChart = new Chart('pieChart', {
     type: 'pie',
     data: {
@@ -70,10 +69,14 @@ createPieChart(): void {
         {
           data: this.mMedals,
           hoverOffset: 4,
+          backgroundColor: ['#956065', '#B8CBE7', '#89A1DB', '#793D52', '#9780A1'],
         },
       ],
     },
     options: {
+      onClick: (event:ChartEvent, chartElements: ActiveElement[]) => {
+        this.handleChartClick(chartElements);
+      },
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
@@ -86,19 +89,27 @@ createPieChart(): void {
   
 }
 
-    /**
+handleChartClick(chartElements: Array<any>): void {
+  if (chartElements && chartElements.length > 0) {
+    const clickedElementIndex = chartElements[0].index;
+    const clickedLabel = this.mLabels[clickedElementIndex];
+    this.clickedLabel = clickedElementIndex;
+    this.router.navigate(['/detail', clickedLabel]);
+  }
+}
+  /**
    * Sets initial data
    *
    * @remarks
    * This embedding lets it do so modifyChart waits for initialData before creating new Chart
    */
 
-    setInitialData() {
+    setInitialData(): void {
       this.olympics$ = this.olympicService.getOlympics();
       this.subscription = this.olympics$.subscribe((value) => {
-        this.modifyChartData(value);
-        this.pieChart.destroy();
+        this.modifyPieChartData(value);
       });
     }
  
+
 }
