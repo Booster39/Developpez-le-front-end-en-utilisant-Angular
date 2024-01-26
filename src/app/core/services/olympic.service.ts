@@ -61,9 +61,4 @@ getOlympics():Observable<Array<Olympic>> {
   return this.olympics$.asObservable();
 }
 
-
-  navigateToDetailPage() {
-    this.router.navigate(['/detail'])
-  }
-
 }
