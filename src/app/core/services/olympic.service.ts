@@ -5,7 +5,6 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { Olympic } from '../models/Olympic';
 import { Participation } from '../models/Participation';
 import { Router } from '@angular/router';
-import { Chart } from 'chart.js';
 
 @Injectable({
   providedIn: 'root',

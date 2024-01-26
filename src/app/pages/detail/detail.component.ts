@@ -14,7 +14,7 @@ import { OlympicService } from 'src/app/core/services/olympic.service';
 
 export class DetailComponent implements OnInit, OnDestroy {
   public olympics!: Olympic[]
-  lineChart!: any;
+  lineChart!: Chart<'line'>;
   entriesCountry: number = 0;
   medalsCountryCount: number = 0;
   athletesCountryCount: number = 0;
@@ -55,7 +55,7 @@ export class DetailComponent implements OnInit, OnDestroy {
   }
 
   createLineChart(): void {
-    const labels = this.olympics[0].participations.map(participation => `${participation.city} ${participation.year}`);
+    const labels = this.olympics[0].participations.map(participation => participation.year);
     const data = this.olympics[0].participations.map(participation => participation.medalsCount);
 
     this.lineChart = new Chart('lineChart', {
@@ -63,18 +63,23 @@ export class DetailComponent implements OnInit, OnDestroy {
       data: {
         labels,
         datasets: [{
-          label: 'Nombre de médailles :',
+          label: 'Nombre de médailles',
           data,
-          borderWidth: 1,
-          backgroundColor: ['#956065', '#B8CBE7', '#89A1DB', '#793D52', '#9780A1']
+          borderWidth: 2,
+          borderColor: '#B8CBE7',
+          backgroundColor: '#89A1DB',
+          pointRadius: 0
         }]
       },
       options: {
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false,
+          },
+          
+        },
       }
     });
   }
