@@ -6,6 +6,7 @@ import { Olympic } from 'src/app/core/models/Olympic';
 import { OlympicService } from 'src/app/core/services/olympic.service';
 import { ChartEvent } from 'chart.js/dist/core/core.plugins';
 import { ActiveElement } from 'chart.js/dist/plugins/plugin.tooltip';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 
 @Component({
@@ -16,10 +17,11 @@ import { ActiveElement } from 'chart.js/dist/plugins/plugin.tooltip';
 ],
 })
 
+
 export class HomeComponent implements OnInit, OnDestroy { 
   public olympics!: Olympic[]
   olympics$!: Observable<Array<Olympic>>;
-  pieChart!: Chart<'pie'>;
+  pieChart!: Chart<any>;
   mLabels: Array<string> = [];
   mMedals: Array<number> = [];
   mYears: Array<number> = [];
@@ -27,18 +29,19 @@ export class HomeComponent implements OnInit, OnDestroy {
   subscription!: Subscription;
   data!: Subscription;
   clickedLabel!: string;
-
+  showLabels = true;
+  
   constructor(private olympicService: OlympicService, private router: Router) {}
-
+  
   ngOnInit(): void {
     this.data = this.olympicService.loadInitialData().subscribe(() => this.setInitialData());
   }
-
+  
   ngOnDestroy(): void {
     this.data.unsubscribe()
     this.subscription.unsubscribe()
   }
- /**
+  /**
    * Populates the empty pie chart with correct data
    *
    * @param olympics - The array of olympics retrieved by service
@@ -63,10 +66,13 @@ export class HomeComponent implements OnInit, OnDestroy {
 createPieChart(): void {
   this.pieChart = new Chart('pieChart', {
     type: 'pie',
+    plugins: [ChartDataLabels],
     data: {
       labels: this.mLabels,
       datasets: [
         {
+          
+          label: "Medals",
           data: this.mMedals,
           hoverOffset: 4,
           backgroundColor: ['#956065', '#B8CBE7', '#89A1DB', '#793D52', '#9780A1'],
@@ -74,12 +80,20 @@ createPieChart(): void {
       ],
     },
     options: {
+      
       onClick: (event:ChartEvent, chartElements: ActiveElement[]) => {
         this.handleChartClick(chartElements);
       },
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
+        datalabels: {
+          anchor: 'end',
+          align: 'end',
+          formatter: function(value, context):any {
+            return context.chart.data.labels ? context.chart.data.labels[context.dataIndex] : '';
+          },
+        },
         legend: {
           display: false,
         },
