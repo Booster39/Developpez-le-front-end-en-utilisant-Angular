@@ -11,9 +11,7 @@ import { ActiveElement } from 'chart.js/dist/plugins/plugin.tooltip';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss',
-  '../pages.scss'
-],
+  styleUrls: ['./home.component.scss'],
 })
 
 
