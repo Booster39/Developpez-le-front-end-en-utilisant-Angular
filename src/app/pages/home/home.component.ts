@@ -6,7 +6,6 @@ import { Olympic } from 'src/app/core/models/Olympic';
 import { OlympicService } from 'src/app/core/services/olympic.service';
 import { ChartEvent } from 'chart.js/dist/core/core.plugins';
 import { ActiveElement } from 'chart.js/dist/plugins/plugin.tooltip';
-import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 
 @Component({
@@ -66,7 +65,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 createPieChart(): void {
   this.pieChart = new Chart('pieChart', {
     type: 'pie',
-    plugins: [ChartDataLabels],
     data: {
       labels: this.mLabels,
       datasets: [
@@ -87,13 +85,6 @@ createPieChart(): void {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        datalabels: {
-          anchor: 'end',
-          align: 'end',
-          formatter: function(value, context):any {
-            return context.chart.data.labels ? context.chart.data.labels[context.dataIndex] : '';
-          },
-        },
         legend: {
           display: false,
         },
