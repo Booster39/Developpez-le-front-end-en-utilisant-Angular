@@ -18,7 +18,7 @@ import { ActiveElement } from 'chart.js/dist/plugins/plugin.tooltip';
 export class HomeComponent implements OnInit, OnDestroy { 
   public olympics!: Olympic[]
   olympics$!: Observable<Array<Olympic>>;
-  pieChart!: Chart<any>;
+  pieChart!: Chart<'pie'>;
   mLabels: Array<string> = [];
   mMedals: Array<number> = [];
   mYears: Array<number> = [];
