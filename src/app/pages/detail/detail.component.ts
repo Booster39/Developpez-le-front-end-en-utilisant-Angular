@@ -12,7 +12,7 @@ import { OlympicService } from 'src/app/core/services/olympic.service';
 })
 
 export class DetailComponent implements OnInit, OnDestroy {
-  public olympics!: Olympic[]
+  public olympics: Olympic[] = [];
   lineChart!: Chart<'line'>;
   entriesCountry: number = 0;
   medalsCountryCount: number = 0;
@@ -29,15 +29,17 @@ export class DetailComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.data = this.olympicService.getDataForCountry(this.countryName).subscribe(data => {
       if (data) {
-        this.olympics = [data];
-        this.modifyLineChartData(this.olympics)
+        this.olympics.push(data);
+        this.modifyLineChartData(this.olympics);
       }
     });
   }
 
   ngOnDestroy(): void {
-    this.data.unsubscribe()
+    this.data.unsubscribe();
   }
+
+
  /**
    * Populates the empty pie chart with correct data
    *
@@ -53,6 +55,14 @@ export class DetailComponent implements OnInit, OnDestroy {
     this.createLineChart();
   }
 
+
+  /**
+   * Sets line chart
+   *
+   * @remarks
+   * creates new line Chart and defines its settings: 
+   * type, labels, datasets and options
+   */
   createLineChart(): void {
     const labels = this.olympics[0].participations.map(participation => participation.year);
     const data = this.olympics[0].participations.map(participation => participation.medalsCount);
@@ -77,12 +87,10 @@ export class DetailComponent implements OnInit, OnDestroy {
           legend: {
             display: false,
           },
-          
         },
       }
     });
   }
-
 }
   
  

@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Chart } from 'chart.js/auto';
-import { Observable, Subscription, of } from 'rxjs';
+import { Observable, Subscription} from 'rxjs';
 import { Olympic } from 'src/app/core/models/Olympic';
 import { OlympicService } from 'src/app/core/services/olympic.service';
 import { ChartEvent } from 'chart.js/dist/core/core.plugins';
@@ -38,6 +38,22 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.data.unsubscribe()
     this.subscription.unsubscribe()
   }
+
+
+/**
+   * Sets initial data
+   *
+   * @remarks
+   * This embedding lets it do so modifyChart waits for initialData before creating new Chart
+   */
+setInitialData(): void {
+  this.olympics$ = this.olympicService.getOlympics();
+  this.subscription = this.olympics$.subscribe((value) => {
+    this.modifyPieChartData(value);
+  });
+}
+
+
   /**
    * Populates the empty pie chart with correct data
    *
@@ -60,6 +76,13 @@ export class HomeComponent implements OnInit, OnDestroy {
 }
 
 
+/**
+   * Sets pie chart
+   *
+   * @remarks
+   * creates new pie Chart and defines its settings: 
+   * type, labels, datasets and options
+   */
 createPieChart(): void {
   this.pieChart = new Chart('pieChart', {
     type: 'pie',
@@ -76,7 +99,6 @@ createPieChart(): void {
       ],
     },
     options: {
-      
       onClick: (event:ChartEvent, chartElements: ActiveElement[]) => {
         this.handleChartClick(chartElements);
       },
@@ -92,6 +114,15 @@ createPieChart(): void {
   
 }
 
+
+/**
+   * Sets onClick event
+   *
+   * @param chartElements - Array of each Olympic slice
+   * 
+   * @remarks
+   * retrieves the clicked chart slice and redirect to its element
+   */
 handleChartClick(chartElements: Array<any>): void {
   if (chartElements && chartElements.length > 0) {
     const clickedElementIndex = chartElements[0].index;
@@ -100,19 +131,5 @@ handleChartClick(chartElements: Array<any>): void {
     this.router.navigate(['/detail', clickedLabel]);
   }
 }
-  /**
-   * Sets initial data
-   *
-   * @remarks
-   * This embedding lets it do so modifyChart waits for initialData before creating new Chart
-   */
-
-    setInitialData(): void {
-      this.olympics$ = this.olympicService.getOlympics();
-      this.subscription = this.olympics$.subscribe((value) => {
-        this.modifyPieChartData(value);
-      });
-    }
- 
-
+  
 }
