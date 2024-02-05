@@ -22,7 +22,7 @@ export class DetailComponent implements OnInit, OnDestroy {
 
   constructor(private olympicService: OlympicService, private router: ActivatedRoute) {
     this.router.params.subscribe(params => {
-      this.countryName = params['clickedLabel'];
+      this.countryName = params['id'];
     });
   }
 
