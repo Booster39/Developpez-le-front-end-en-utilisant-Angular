@@ -24,7 +24,8 @@ export class OlympicService {
       catchError((error, caught) => {
         console.error(error);
         this.olympics$.next(null);
-        this.router.navigateByUrl('error');
+        this.olympics$.error('error');
+        this.router.navigateByUrl('**');
         return caught;
       })
     );

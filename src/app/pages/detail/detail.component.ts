@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute} from '@angular/router';
+import { ActivatedRoute, Router} from '@angular/router';
 import { Chart } from 'chart.js';
 import { Subscription} from 'rxjs';
 import { Olympic } from 'src/app/core/models/Olympic';
@@ -20,8 +20,8 @@ export class DetailComponent implements OnInit, OnDestroy {
   data!: Subscription;
   countryName!: string;
 
-  constructor(private olympicService: OlympicService, private router: ActivatedRoute) {
-    this.router.params.subscribe(params => {
+  constructor(private olympicService: OlympicService, private route: ActivatedRoute, private router: Router) {
+    this.route.params.subscribe(params => {
       this.countryName = params['id'];
     });
   }
@@ -31,6 +31,8 @@ export class DetailComponent implements OnInit, OnDestroy {
       if (data) {
         this.olympics.push(data);
         this.modifyLineChartData(this.olympics);
+      } else {
+        this.router.navigateByUrl('error');
       }
     });
   }
