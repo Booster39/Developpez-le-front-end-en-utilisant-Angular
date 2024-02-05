@@ -26,7 +26,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   subscription!: Subscription;
   data!: Subscription;
   clickedLabel!: string;
-  showLabels = true;
   
   constructor(private olympicService: OlympicService, private router: Router) {}
   
