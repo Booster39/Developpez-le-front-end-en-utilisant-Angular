@@ -25,7 +25,7 @@ export class OlympicService {
         console.error(error);
         this.olympics$.next(null);
         this.olympics$.error('error');
-        this.router.navigateByUrl('**');
+        this.router.navigateByUrl('error');
         return caught;
       })
     );
