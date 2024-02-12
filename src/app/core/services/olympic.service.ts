@@ -16,15 +16,32 @@ export class OlympicService {
   olympic: Olympic | undefined;
   participation: Participation | undefined;
 
+  /**
+ * Constructor
+ * 
+ * @remarks
+ * Initializes a new instance of the service.
+ * 
+ * @param http - An instance of the HttpClient used to make the get request.
+ * @param router - An instance of the Router used for navigation.
+ */
   constructor(private http: HttpClient, private router: Router) {}
 
+
+/**
+ * Olympic data load
+ * 
+ * @remarks
+ * Loads initial data by fetching Olympics data from the server.
+ * 
+ * @returns An Observable emitting the fetched Olympics data.
+ */
   loadInitialData() {
     return this.http.get<Array<Olympic>>(this.olympicUrl).pipe(
       tap((value) => this.olympics$.next(value)),
       catchError((error, caught) => {
         console.error(error);
         this.olympics$.next(null);
-        this.olympics$.error('error');
         this.router.navigateByUrl('error');
         return caught;
       })
@@ -46,6 +63,15 @@ countMedals(olympic: Olympic): number {
   return medals
   }
   
+/**
+ * Retrieves country data
+ * 
+ *@remarks 
+ * Retrieves data for the specified country from the observable list of Olympics.
+ * 
+ * @param countryName : The name of the country for which data is to be retrieved.
+ * @returns An Observable emitting the Olympic data for the specified country
+ */
   getDataForCountry(countryName: string): Observable<Olympic | undefined> {
     return this.olympics$.asObservable().pipe(
       map(olympics => {
@@ -57,6 +83,11 @@ countMedals(olympic: Olympic): number {
     );
 }
 
+/**
+ * Retrieves the Olympics data as an observable.
+ * 
+ * @returns An Observable emitting the Olympics data.
+ */
 getOlympics():Observable<Array<Olympic>> {
   return this.olympics$.asObservable();
 }
