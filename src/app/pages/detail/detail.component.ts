@@ -20,12 +20,30 @@ export class DetailComponent implements OnInit, OnDestroy {
   data!: Subscription;
   countryName!: string;
 
+
+  /**
+ * Constructor - Instanciation
+ * 
+ * @remarks
+ * Initializes a new instance of the component or service and subscribes to route parameter changes.
+ * 
+ * @param olympicService : An instance of the OlympicService used to fetch Olympic data.
+ * @param route : An instance of the ActivatedRoute used to access route parameters (id = selected country).
+ * @param router: An instance of the Router used for navigation.
+ */
   constructor(private olympicService: OlympicService, private route: ActivatedRoute, private router: Router) {
     this.route.params.subscribe(params => {
       this.countryName = params['id'];
     });
   }
 
+  /**
+   * Fetching
+   * 
+   * @remarks
+   * fetches data for the specified country
+   * using the olympicService and subscribes to updates
+   */
   ngOnInit(): void {
     this.data = this.olympicService.getDataForCountry(this.countryName).subscribe(data => {
       if (data) {
@@ -37,6 +55,13 @@ export class DetailComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Destruction
+   *
+   * @remarks
+   * Destroys the Olympic Service and its subscriptions
+   * prevents memory leaks
+   */
   ngOnDestroy(): void {
     this.data.unsubscribe();
   }

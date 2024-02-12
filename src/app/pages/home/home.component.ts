@@ -27,12 +27,36 @@ export class HomeComponent implements OnInit, OnDestroy {
   data!: Subscription;
   clickedLabel!: string;
   
+/**
+ * Constructor - Instanciation
+ * 
+ * @remarks
+ * Initializes a new instance of the Olympic service.
+ * 
+ * @param olympicService : An instance of the OlympicService used to fetch Olympic data.
+ * @param router : An instance of the Router used for navigation.
+ */
   constructor(private olympicService: OlympicService, private router: Router) {}
   
+  /**
+   * Fetching
+   * 
+   * @remarks
+   * fetches data for the specified country
+   * using the olympicService and subscribes to updates
+   */
   ngOnInit(): void {
     this.data = this.olympicService.loadInitialData().subscribe(() => this.setInitialData());
   }
-  
+
+
+  /**
+   * Destruction
+   *
+   * @remarks
+   * Destroys the Olympic Service and its subscriptions
+   * prevents memory leaks
+   */
   ngOnDestroy(): void {
     this.data.unsubscribe()
     this.subscription.unsubscribe()
@@ -53,7 +77,9 @@ setInitialData(): void {
 }
 
 
-  /**
+  /**Sets line Chart
+   * 
+   * @remarks
    * Populates the empty pie chart with correct data
    *
    * @param olympics - The array of olympics retrieved by service

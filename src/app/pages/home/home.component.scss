@@ -1,2 +1,7 @@
 @import url('../pages.scss');
 
+@media screen and (orientation: portrait) {
+    .resp {
+        width: 100%;
+    }
+}
