@@ -25,7 +25,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   mNumberOfGames: number = 0;
   subscription!: Subscription;
   data!: Subscription;
-  clickedLabel!: string;
+  id!: string;
   
 /**
  * Constructor - Instanciation
@@ -151,9 +151,9 @@ createPieChart(): void {
 handleChartClick(chartElements: Array<any>): void {
   if (chartElements && chartElements.length > 0) {
     const clickedElementIndex = chartElements[0].index;
-    const clickedLabel = this.mLabels[clickedElementIndex];
-    this.clickedLabel = clickedElementIndex;
-    this.router.navigate(['/detail', clickedLabel]);
+    const id = this.mLabels[clickedElementIndex];
+    this.id = clickedElementIndex;
+    this.router.navigate(['/detail', id]);
   }
 }
   
